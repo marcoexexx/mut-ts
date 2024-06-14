@@ -1,0 +1,13 @@
+{
+  "name": "mut-ts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "keywords": [],
+  "author": "Aung Koko Lwin <toyko2001@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.14.2",
+    "typescript": "^5.4.5"
+  }
+}
