@@ -1,13 +1,24 @@
 export const ErrorKind = {
   UndefinedValue: "UndefinedValue",
 } as const;
-export type ErrorKind = typeof ErrorKind[keyof typeof ErrorKind]
+export type ErrorKind = typeof ErrorKind[keyof typeof ErrorKind];
 
-export default class Mutable<T> {
+export default class Mutable<T extends object> {
   constructor(private _value: T | undefined) {}
 
-  static new<T>(value: T) {
+  static new<T extends object>(value: T) {
     return new Mutable(value);
+  }
+
+  static deepFreeze<T extends object>(obj: T) {
+    const props = Object.getOwnPropertyNames(obj);
+
+    for (const prop of props) {
+      const value = obj[prop as keyof typeof obj];
+      if (value && typeof value === "object") Mutable.deepFreeze(value);
+    }
+
+    return Object.freeze(obj);
   }
 
   borrow_mut(): T {
@@ -21,7 +32,7 @@ export default class Mutable<T> {
     if (this._value === undefined) {
       throw new Error(`${ErrorKind.UndefinedValue}: moved value: `);
     }
-    return Object.freeze(this._value);
+    return Mutable.deepFreeze(this._value);
   }
 
   clone(): Mutable<T> {
